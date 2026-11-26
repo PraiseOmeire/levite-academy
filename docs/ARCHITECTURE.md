@@ -30,11 +30,13 @@ One Next.js app serves both sides:
 - **One account per person.** An account can hold several **enrollments** (one per instrument).
 - **Each enrollment needs its own active subscription** (one payment = one instrument).
 - Moving up a level happens **on the same account and enrollment**.
+- **One unpaid instrument at a time.** After choosing, the student goes to **Review your plan** (lessons, length, feedback promise, price). Before paying they can change the **level** (and genres) there, but not the instrument. A new instrument can only be added once nothing is waiting for payment.
+- Genres are **for instructors only**. They're never shown back to students as course content (teaching focus is contemporary music).
 - **Genres:** intermediate and expert students pick the genres they are **already familiar with** (for information only, it doesn't filter lessons). Beginners don't see genres.
 
 ### Registration fields
-Full name, email, WhatsApp number, date of birth, country, profile picture, next of kin.
-Sign-up asks only for name, email, password and WhatsApp number. Onboarding collects the rest.
+Full name, email, WhatsApp number, date of birth, country, profile picture, next of kin (**optional**).
+Sign-up asks only for name, email, password and WhatsApp number. Onboarding asks for date of birth and country (required) and next of kin (optional). Under-18s must give a parent/guardian email and consent.
 
 ### Subscription
 - **₦5,000 per month per enrollment** (test price).
@@ -73,6 +75,8 @@ Sign-up asks only for name, email, password and WhatsApp number. Onboarding coll
 | 2 | Placement: how do we stop a beginner picking "expert"? | No test before payment. Show a "this level is for you if you can…" self-check, and allow a **free level switch within the first 7 days** (by the student, or recommended by an instructor). |
 | 3 | Under-18 students | Treat next of kin as parent/guardian. Collect guardian email and consent for under-18s. Profile photo optional. |
 | 4 | Bonus days while auto-renewing | As described above (held until renewal stops). An alternative is to skip the next charge. |
+| 6 | Can one account study two instruments in the same month? The client's intent seems to be **one active instrument per account at a time** (a second instrument at once means a second email). | Ask why. If it's about teaching focus, enforce one active enrollment per account. If it's about payment, separate subscriptions on one account already cover it. Decide before phase 4. |
+| 7 | Can a student cancel an unpaid instrument choice to pick a different one? | Allow before payment only (nothing has been charged). |
 | 5 | International pricing | Start with naira only via Paystack (international cards work, at a higher fee). Add USD or Stripe later if needed. |
 
 ---
@@ -173,7 +177,8 @@ Authorization is enforced **on the server** (in data access functions and server
 
 ## 6. Build phases
 
-1. **Foundation:** database, auth, roles, sign-up, onboarding (profile, instrument, level, genres)
+1. **Foundation** ✅: database, auth, roles, sign-up, onboarding (profile, instrument, level, genres)
+   - *Deferred:* profile photo upload (needs R2, phase 2) · email verification and password reset (need Resend, phase 5) · editing the profile after onboarding · the free level-switch flow (needs a paid period, phase 4)
 2. **Content:** admin builds modules and lessons and uploads to Stream; students watch, with >50% tracking
 3. **Assignments:** submission upload, instructor queue, approve/reject + feedback, unlocking, weekly limit, overdue-review bonus days
 4. **Payments:** Paystack plans, checkout, webhooks, auto-renew toggle, access control

@@ -28,6 +28,21 @@ export const LEVELS = [
 
 export type LevelSlug = (typeof LEVELS)[number]["slug"];
 
+/**
+ * "This level is for you if…" self-check shown when choosing a level (instead of a placement test).
+ * Generic for now; can become per-instrument once instructors write them.
+ */
+export const LEVEL_SELF_CHECK: Record<LevelSlug, string> = {
+  beginner: "You're new to this instrument or only know a few basics.",
+  intermediate:
+    "You can play simple songs comfortably, know your basic scales and chords, and read or follow simple notation.",
+  expert:
+    "You play confidently across keys and styles, improvise, and want to refine advanced technique.",
+};
+
+/** Days after the first payment in which a student may switch level for free. */
+export const FREE_LEVEL_SWITCH_DAYS = 7;
+
 /** Planned lesson count for a level: 3/week × 4 weeks × months (72 / 36 / 36). */
 export function plannedLessonCount(durationMonths: number): number {
   return LESSONS_PER_WEEK * WEEKS_PER_MONTH * durationMonths;
@@ -44,6 +59,20 @@ export const REVIEW_SLA_HOURS = 48;
 /** Monthly price per enrollment, in kobo (₦5,000 test price). */
 export const MONTHLY_PRICE_KOBO = 5_000 * 100;
 export const CURRENCY = "NGN";
+
+/** "₦5,000" */
+export function formatNaira(kobo: number): string {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: CURRENCY,
+    maximumFractionDigits: 0,
+  }).format(kobo / 100);
+}
+
+/** "about 6 months" */
+export function durationLabel(durationMonths: number): string {
+  return `about ${durationMonths} month${durationMonths === 1 ? "" : "s"}`;
+}
 
 export const ROLES = ["student", "instructor", "admin"] as const;
 export type Role = (typeof ROLES)[number];
